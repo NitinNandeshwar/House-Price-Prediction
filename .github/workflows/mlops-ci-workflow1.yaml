@@ -1,0 +1,44 @@
+name: MLOPS CI Workflow 1
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  Workflow:
+    runs-on: ubuntu-latest
+
+    # services:
+    #   fastapi:
+    #     image: nitinnandeshwar/fastapi:dev
+    #     ports:
+    #       - 8000:8000
+
+    #   streamlit:
+    #     image: nitinnandeshwar/streamlit:dev
+    #     ports:
+    #       - 8501:8501
+    #     env:
+    #       API_URL: http://fastapi:8000
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11.13'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run tests
+        run: |
+          pytest tests/
