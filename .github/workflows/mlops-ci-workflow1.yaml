@@ -90,5 +90,5 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: nitinnandeshwar/fastapi:{{ github.sha }}
+          tags: nitinnandeshwar/fastapi:${{ github.sha::7 }}
       
