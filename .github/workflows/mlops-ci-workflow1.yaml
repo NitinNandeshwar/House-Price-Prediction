@@ -83,13 +83,26 @@ jobs:
         
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v3
-      
-      - name: Build and Push 
+
+      - name: Get short SHA
+        id: vars
+        run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
+
+      - name: Build and Push
         uses: docker/build-push-action@v6
         with:
           context: .
           file: ./Dockerfile
           push: true
-          tags: nitinnandeshwar/fastapi:${{ substr(github.sha, 0, 7) }}
+          tags: nitinnandeshwar/fastapi:${{ env.SHORT_SHA }}
+
+      
+      # - name: Build and Push 
+      #   uses: docker/build-push-action@v6
+      #   with:
+      #     context: .
+      #     file: ./Dockerfile
+      #     push: true
+      #     tags: nitinnandeshwar/fastapi:${{ substr(github.sha, 0, 7) }}
           # tags: nitinnandeshwar/fastapi:${{ github.sha::7 }}
       
