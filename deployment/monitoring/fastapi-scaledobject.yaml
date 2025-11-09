@@ -18,7 +18,7 @@ spec:
       query: |
         histogram_quantile(0.95,
         sum(rate(http_request_duration_seconds_bucket[1m])) by (le))
-      threshold: "0.5"  # adjust threshold as needed
+      threshold: "0.1"  # adjust threshold as needed
 
   # Add only the following to existing code
   - type: prometheus
@@ -26,4 +26,18 @@ spec:
       serverAddress: http://prom-kube-prometheus-stackprometheus.monitoring.svc:9090
       metricName: request_rate
       query: sum(rate(http_requests_total[1m]))
-      threshold: "1000"
+      threshold: "20"
+  # For VPA Scaling based on CPU Utilization
+  - type: cpu
+    metricType: Utilization # Allowed types are 'Utilization' or 'AverageValue'
+    metadata:
+      value: "50"
+
+  # ✨ New: time-based schedule with KEDA cron
+  # New: run a scheduled bump on Sundays at 18:18
+  - type: cron
+    metadata:
+      timezone: Europe/Dublin        # IANA tz
+      start: "18 27 * * 0"           # 18:18 every Sunday (0 = Sunday)
+      end:   "18 31 * * 0"           # end one minute later (18:19)
+      desiredReplicas: "7"           # keep at least 3 during that minute
